@@ -27,12 +27,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
-    'recipes.apps.RecipesConfig',
-    'users.apps.UsersConfig',
-    'api.apps.ApiConfig',
+    'recipes',
+    'users',
+    'api',
     'djoser',
 ]
 
@@ -139,13 +140,38 @@ DJOSER = {
         'user': 'api.serializers.CustomUserSerializer',
         'current_user': 'api.serializers.CustomUserSerializer',
     },
-    'HIDE_USERS': False,
     'PERMISSIONS': {
-        'user': [
-            'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-        ],
-        'user_list': [
-            'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-        ],
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
     },
+    'HIDE_USERS': False,
 }
+
+# Ingredient
+
+MAX_LENGTH_INGREDIENT_NAME = 150
+
+MAX_LENGTH_INGREDIENT_MEASURMENT_UNIT = 150
+
+# Tag
+
+MAX_LENGTH_TAG_NAME = 50
+
+MAX_LENGTH_TAG_COLOR = 7
+
+# Recipe
+
+MAX_LENGTH_RECIPE_NAME = 50
+
+# User
+
+MAX_EMAIL_NAME_LENGTH = 254
+
+MAX_USERNAME_LENGTH = 150
+
+MAX_LENGTH_FIRST_NAME = 150
+
+MAX_LENGTH_LAST_NAME = 150
+
+
+

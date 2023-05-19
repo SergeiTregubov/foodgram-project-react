@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 
 
@@ -7,67 +9,46 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username', 'first_name', 'last_name',)
 
-    GUEST = 'guest'
-    AUTHORIZED = 'authorized'
-    ADMIN = 'admin'
-
-    USER_ROLES = [
-        (GUEST, 'guest'),
-        (AUTHORIZED, 'authorized'),
-        (ADMIN, 'admin'),
-    ]
-
     email = models.EmailField(
-        max_length=254,
+        max_length=settings.MAX_EMAIL_NAME_LENGTH,
         unique=True,
         verbose_name='Email',
+        help_text='Введите электронную почту пользователя'
     )
     username = models.CharField(
         blank=False,
-        max_length=150,
+        max_length=settings.MAX_USERNAME_LENGTH,
         unique=True,
-        verbose_name='Username',
+        validators=[RegexValidator(
+            regex=r'^[\w.@+-]+\Z',
+            message='Введите корректный Никнэйм',
+            code='invalid_username')],
+        verbose_name='Никнэйм',
+        help_text='Никнэйм'
     )
     first_name = models.CharField(
         blank=False,
-        max_length=150,
-        verbose_name='First Name',
+        max_length=settings.MAX_LENGTH_FIRST_NAME,
+        verbose_name='Имя',
+        help_text='Введите имя пользователя'
     )
     last_name = models.CharField(
         blank=False,
-        max_length=150,
-        verbose_name='Last Name',
+        max_length=settings.MAX_LENGTH_LAST_NAME,
+        verbose_name='Фамилия',
+        help_text='Введите фамилию пользователя'
     )
-    password = models.CharField(
-        max_length=150,
-        verbose_name='Password',
-    )
+    
     role = models.CharField(
         default='guest',
-        choices=USER_ROLES,
-        max_length=10,
+        max_length=settings.MAX_LENGTH_TAG_COLOR,
         verbose_name='User Role',
     )
 
-    @property
-    def is_guest(self):
-        """Проверка прав неавторизованного пользователя (гость)."""
-        return self.role == self.GUEST
-
-    @property
-    def is_authorized(self):
-        """Проверка наличия авторизованных прав пользователя."""
-        return self.role == self.AUTHORIZED
-
-    @property
-    def is_admin(self):
-        """Проверка наличия прав администратора."""
-        return self.role == self.ADMIN or self.is_superuser
-
     class Meta:
         ordering = ('id',)
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
         return self.username
@@ -79,18 +60,29 @@ class Subscription(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='subscriber',
-        verbose_name='Subscriber',
+        verbose_name='Подписчик',
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='subscribing',
-        verbose_name='Recipe Author',
+        verbose_name='Автор',
     )
 
     class Meta:
-        verbose_name = 'Subscription'
-        verbose_name_plural = 'Subscriptions'
+        ordering = ['user', 'author']
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_subscription'
+            ),
+            models.CheckConstraint(
+                name='%(app_label)s_%(class)s_prevent_self_subscription',
+                check=~models.Q(user=models.F('author')),
+            )
+        ]
 
     def __str__(self):
         return f'{self.user} subscribed on {self.author}'

@@ -2,111 +2,58 @@ from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet as DjoserUserViewSet
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
-from rest_framework import mixins, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from users.models import Subscription, User
+from users.models import User
 
 from .filters import IngredientFilter, RecipeFilter
+from .paginator import LimitPageNumberPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
-from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
-                          FavoriteSerializer, IngredientSerializer,
+from .serializers import (FavoriteSerializer, IngredientSerializer,
                           RecipeSerializer, RecipeShortSerializer,
-                          RecipeWriteSerializer, SetPasswordSerializer,
-                          ShoppingCartSerializer, SubscriptionSerializer,
+                          RecipeWriteSerializer, ShoppingCartSerializer,
                           SubscriptionUserSerializer, TagSerializer)
 
 
-class UserViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet,
-):
-    """Пользователь, подписка и список подписок."""
+class UserViewSet(DjoserUserViewSet):
+    queryset = User.objects.all().order_by('-date_joined')
+    pagination_class = LimitPageNumberPagination
 
-    queryset = User.objects.all()
-
-    def get_serializer_class(self):
-        if self.action in ('subscriptions', 'subscribe'):
-            return SubscriptionUserSerializer
-        if self.action in ('list', 'retrieve', 'me'):
-            return CustomUserSerializer
-        if self.action == 'set_password':
-            return SetPasswordSerializer
-        return CustomUserCreateSerializer
-
-    @action(
-        detail=False,
-        methods=['GET'],
-        permission_classes=[IsAuthenticated]
-    )
-    def me(self, request):
-        user = request.user
-        serializer = self.get_serializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @action(
-        detail=False,
-        methods=['POST'],
-        permission_classes=[IsAuthenticated]
-    )
-    def set_password(self, request):
-        user = request.user
-        data = request.data
-        serializer = self.get_serializer(user, data=data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-        return Response(
-            {
-                'detail': 'Password changed successfully'
-            },
-            status=status.HTTP_204_NO_CONTENT
+    @action(methods=('POST', 'DELETE'), detail=True)
+    def subscribe(self, request, **kwargs):
+        user = self.request.user
+        if user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        obj = get_object_or_404(self.queryset, id=kwargs.get('id'))
+        serializer = SubscriptionUserSerializer(
+            obj, context={'request': request}
         )
+        if self.request.method == 'POST':
+            user.subscribe.add(obj)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        if self.request.method == 'DELETE':
+            user.subscribe.remove(obj)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @action(
-        detail=True,
-        methods=['POST'],
-        permission_classes=[IsAuthorOrAdminOrReadOnly]
-    )
-    def subscribe(self, request, pk):
-        user = request.user
-        author = get_object_or_404(User, pk=pk)
-        data = {
-            'user': user.pk,
-            'author': author.pk
-        }
-        serializer = SubscriptionSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        serializer = self.get_serializer(author)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    @subscribe.mapping.delete
-    def unsubscribe(self, request, pk):
-        user = request.user
-        author = get_object_or_404(User, pk=pk)
-        Subscription.objects.filter(user=user, author=author).delete()
-        message = {
-            'detail': 'You have successfully unsubscribed'
-        }
-        return Response(message, status=status.HTTP_204_NO_CONTENT)
-
-    @action(
-        detail=False,
-        methods=['GET'],
-        permission_classes=[IsAuthenticated]
-    )
+    @action(methods=('GET',), detail=False)
     def subscriptions(self, request):
-        user = request.user
-        subscriptions = User.objects.filter(
-            subscribing__user=user
-        ).prefetch_related('recipes')
-        page = self.paginate_queryset(subscriptions)
-        serializer = self.get_serializer(page, many=True)
+        user = self.request.user
+        if user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        authors = user.subscribe.all()
+        pages = self.paginate_queryset(authors)
+        serializer = SubscriptionUserSerializer(
+            pages, many=True, context={'request': request}
+        )
         return self.get_paginated_response(serializer.data)
 
 
@@ -136,13 +83,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.action in ('create', 'partial_update'):
             return RecipeWriteSerializer
         return RecipeSerializer
-
-    def get_queryset(self):
-        user_id = self.request.user.pk
-        return Recipe.objects.add_user_annotations(user_id).select_related(
-            'author'
-        ).prefetch_related(
-            'ingredients', 'tags'
+    
+    def get_queryset(self): 
+        user_id = self.request.user.pk 
+        return Recipe.objects.add_user_annotations(user_id).select_related( 
+            'author' 
+        ).prefetch_related( 
+            'ingredients', 'tags' 
         )
 
     @action(
