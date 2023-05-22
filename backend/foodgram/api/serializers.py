@@ -1,32 +1,13 @@
-import base64 
- 
 from django.contrib.auth.password_validation import validate_password 
-from django.core.files.base import ContentFile
-from djoser.serializers import UserCreateSerializer, UserSerializer 
+from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe, 
                             ShoppingCart, Tag) 
 from rest_framework import serializers 
 from rest_framework.validators import UniqueTogetherValidator 
 from users.models import User
-
-
-class CustomUserCreateSerializer(UserCreateSerializer): 
-    """Сериализатор пользовательской модели (создать пользователя).""" 
-    password = serializers.CharField( 
-        style={ 
-            'input_type': 'password' 
-        }, 
-        write_only=True, 
-    ) 
- 
-    class Meta: 
-        model = User 
-        fields = ( 
-            'email', 'id', 'username', 'first_name', 'last_name', 'password' 
-        ) 
  
  
-class CustomUserSerializer(UserSerializer): 
+class CustomUserSerializer(serializers.ModelSerializer): 
     """Сериализатор пользовательской модели.""" 
     is_subscribed = serializers.SerializerMethodField() 
  
@@ -60,13 +41,17 @@ class SubscriptionUserSerializer(CustomUserSerializer):
         ) 
  
     def get_recipes(self, obj): 
-        request = self.context.get('request') 
-        recipes_limit = request.GET.get('recipes_limit')
-        if recipes_limit: 
-            recipes = obj.recipes.all()[:(int(recipes_limit))] 
+        request = self.context.get('request')
+        if not request.user.is_anonymous:
+            context = {'request': request}
+            recipes_limit = request.GET.get('recipes_limit')
+        else:
+            return False   
+        if recipes_limit is not None:
+            recipes = obj.recipes.all()[:(int(recipes_limit))]
         else: 
             recipes = obj.recipes.all() 
-        return RecipeShortSerializer(recipes, many=True).data 
+        return RecipeShortSerializer(recipes, many=True, context=context).data 
  
  
 class IngredientSerializer(serializers.ModelSerializer): 
@@ -103,17 +88,6 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
     class Meta: 
         model = IngredientAmount 
         fields = ('id', 'name', 'measurement_unit', 'amount') 
- 
- 
-class Base64ImageField(serializers.ImageField): 
-    """Сериализатор для поля изображения.""" 
- 
-    def to_internal_value(self, data): 
-        if isinstance(data, str) and data.startswith('data:image'): 
-            img_format, img_str = data.split(';base64,') 
-            ext = img_format.split('/')[-1] 
-            data = ContentFile(base64.b64decode(img_str), name='temp.' + ext) 
-        return super().to_internal_value(data) 
  
  
 class RecipeSerializer(serializers.ModelSerializer): 

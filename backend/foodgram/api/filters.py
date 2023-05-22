@@ -2,14 +2,10 @@ import django_filters
 from recipes.models import Ingredient, Recipe, Tag
 from rest_framework.filters import SearchFilter
 
-
-class IngredientSearchFilter(SearchFilter):
-    search_param = 'name'
-
     
-class IngredientFilter(django_filters.FilterSet):
+class IngredientFilter(SearchFilter):
     """Фильтр для ингредиентов."""
-    name = django_filters.CharFilter(lookup_expr='startswith')
+    search_param = 'name'
 
     class Meta:
         model = Ingredient

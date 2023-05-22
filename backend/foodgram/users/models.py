@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
 from django.db import models
 
 
@@ -15,35 +14,17 @@ class User(AbstractUser):
         verbose_name='Email',
         help_text='Введите электронную почту пользователя'
     )
-    username = models.CharField(
-        blank=False,
-        max_length=settings.MAX_USERNAME_LENGTH,
-        unique=True,
-        validators=[RegexValidator(
-            regex=r'^[\w.@+-]+\Z',
-            message='Введите корректный Никнэйм',
-            code='invalid_username')],
-        verbose_name='Никнэйм',
-        help_text='Никнэйм'
-    )
     first_name = models.CharField(
-        blank=False,
         max_length=settings.MAX_LENGTH_FIRST_NAME,
         verbose_name='Имя',
         help_text='Введите имя пользователя'
     )
     last_name = models.CharField(
-        blank=False,
         max_length=settings.MAX_LENGTH_LAST_NAME,
         verbose_name='Фамилия',
         help_text='Введите фамилию пользователя'
     )
     
-    role = models.CharField(
-        default='guest',
-        max_length=settings.MAX_LENGTH_TAG_COLOR,
-        verbose_name='User Role',
-    )
 
     class Meta:
         ordering = ('id',)

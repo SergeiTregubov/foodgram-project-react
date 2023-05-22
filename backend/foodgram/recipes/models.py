@@ -42,7 +42,7 @@ class Tag(models.Model):
         help_text='example, #49B64E',
         validators=(
             validators.RegexValidator(
-                '^#([A-Fa-f0-9]{6})$',
+                '^#([A-Fa-f0-9]{6}}|[A-Fa-f0-9]{3})$',
                 'код цвета в HEX-формате: #ff0000'),
         )
     )
@@ -119,6 +119,7 @@ class IngredientAmount(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиент',
+        related_name='+',
     )
     recipe = models.ForeignKey(
         Recipe,
@@ -127,11 +128,17 @@ class IngredientAmount(models.Model):
     )
     amount = models.IntegerField(
         verbose_name='Количество',
+        validators=[MinValueValidator(1, message='Минимальное количество 1!')]
     )
 
     class Meta:
-        verbose_name = 'Ингредиент рецепта'
-        verbose_name_plural = 'Ингредиенты рецепта'
+        verbose_name = 'Количество ингредиента в рецепте'
+        verbose_name_plural = 'Количество ингредиентов'
+        ordering = ['-id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='unique ingredient')]
 
     def __str__(self):
         return f'{self.ingredient}: {self.amount}'
@@ -143,6 +150,7 @@ class Favorite(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
+        related_name='+',
     )
     user = models.ForeignKey(
         User,
@@ -162,6 +170,7 @@ class ShoppingCart(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
+        related_name='+',
     )
     user = models.ForeignKey(
         User,
@@ -173,32 +182,4 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = 'Список товара'
         verbose_name_plural = 'Списки товаров'
-
-
-class IngredientInRecipe(models.Model):
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='ingredient_list',
-        verbose_name='Рецепт',
-    )
-    ingredient = models.ForeignKey(
-        Ingredient,
-        on_delete=models.CASCADE,
-        verbose_name='Ингредиент',
-    )
-    amount = models.PositiveSmallIntegerField(
-        'Количество',
-        validators=[MinValueValidator(1, message='Минимальное количество 1!')]
-    )
-
-    class Meta:
-        verbose_name = 'Ингредиент в рецепте'
-        verbose_name_plural = 'Ингредиенты в рецептах'
-
-    def __str__(self):
-        return (
-            f'{self.ingredient.name} ({self.ingredient.measurement_unit})'
-            f' - {self.amount} '
-        )
     

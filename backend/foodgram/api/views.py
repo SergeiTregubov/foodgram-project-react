@@ -2,7 +2,6 @@ from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet as DjoserUserViewSet
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from rest_framework import status, viewsets
@@ -20,7 +19,7 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
                           SubscriptionUserSerializer, TagSerializer)
 
 
-class UserViewSet(DjoserUserViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     pagination_class = LimitPageNumberPagination
 
