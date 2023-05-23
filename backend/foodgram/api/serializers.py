@@ -1,9 +1,8 @@
-from django.contrib.auth.password_validation import validate_password 
 from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe, 
                             ShoppingCart, Tag) 
 from rest_framework import serializers 
-from rest_framework.validators import UniqueTogetherValidator 
+from rest_framework.validators import UniqueTogetherValidator, ValidationError
 from users.models import User
  
  
@@ -48,9 +47,13 @@ class SubscriptionUserSerializer(CustomUserSerializer):
         else:
             return False   
         if recipes_limit is not None:
-            recipes = obj.recipes.all()[:(int(recipes_limit))]
-        else: 
-            recipes = obj.recipes.all() 
+            try:
+                recipes_limit = int(recipes_limit)
+                recipes = recipes[:recipes_limit]
+            except ValueError:
+                raise ValidationError(
+                    ('''Параметр исключает тип int''')
+                    ) 
         return RecipeShortSerializer(recipes, many=True, context=context).data 
  
  

@@ -13,8 +13,6 @@ SECRET_KEY = 'a+dyhls*)2a)35lbwx1(so&f#!myl6ojbt%4m#y7tb$i*7izzb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# DEBUG = False
-# ALLOWED_HOSTS = ['*']
 
 ALLOWED_HOSTS = []
 
@@ -170,6 +168,3 @@ MAX_EMAIL_NAME_LENGTH = 254
 MAX_LENGTH_FIRST_NAME = 150
 
 MAX_LENGTH_LAST_NAME = 150
-
-
-

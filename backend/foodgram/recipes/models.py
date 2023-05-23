@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core import validators
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
 from users.models import User
@@ -9,12 +9,14 @@ from users.models import User
 class Ingredient(models.Model):
     """Модель ингредиентов."""
     name = models.CharField(
-        blank=False,
         max_length=settings.MAX_LENGTH_INGREDIENT_NAME,
         verbose_name='Название',
     )
+    name_validator = RegexValidator(
+        r'^[a-zA-Z0-9\s]*$',
+        'Название может быть только буквами и цифрами.'
+    )
     measurement_unit = models.CharField(
-        blank=False,
         max_length=settings.MAX_LENGTH_INGREDIENT_MEASURMENT_UNIT,
         verbose_name='Единица измерения',
     )
@@ -35,6 +37,10 @@ class Tag(models.Model):
         unique=True,
         verbose_name='Название',
     )
+    name_validator = RegexValidator(
+        r'^[a-zA-Z0-9\s]*$',
+        'Название может быть только буквами и цифрами.'
+    )
     color = models.CharField(
         max_length=settings.MAX_LENGTH_TAG_COLOR,
         unique=True,
@@ -42,7 +48,7 @@ class Tag(models.Model):
         help_text='example, #49B64E',
         validators=(
             validators.RegexValidator(
-                '^#([A-Fa-f0-9]{6}}|[A-Fa-f0-9]{3})$',
+                '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
                 'код цвета в HEX-формате: #ff0000'),
         )
     )
@@ -73,6 +79,10 @@ class Recipe(models.Model):
         unique=True,
         verbose_name='Название',
     )
+    name_validator = RegexValidator(
+        r'^[a-zA-Z0-9\s]*$',
+        'Название  может быть только буквами и цифрами.'
+    )
     image = models.ImageField(
         blank=True,
         upload_to='recipes/',
@@ -81,10 +91,11 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name='Описание',
     )
-    ingredients = models.ManyToManyField(
-        Ingredient,
-        through='IngredientAmount',
+    ingredients = models.ManyToManyField( 
+        Ingredient, 
+        through='IngredientAmount', 
         verbose_name='Ингредиенты',
+        related_name='recipe_ingredients'
     )
     tags = models.ManyToManyField(
         Tag,
