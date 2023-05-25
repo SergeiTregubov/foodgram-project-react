@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
+
+from .validators import check_name, check_username
 
 
 class User(AbstractUser):
@@ -15,23 +17,24 @@ class User(AbstractUser):
         verbose_name='Email',
         help_text='Введите электронную почту пользователя'
     )
+    username = models.CharField(
+        max_length=settings.MAX_USERNAME_LENGTH,
+        unique=True,
+        verbose_name='Никнэйм',
+        help_text='Никнэйм',
+        validators=[check_username, UnicodeUsernameValidator],
+    )
     first_name = models.CharField(
         max_length=settings.MAX_LENGTH_FIRST_NAME,
         verbose_name='Имя',
         help_text='Введите имя пользователя',
-    )
-    name_validator = RegexValidator(
-        r'^[a-zA-Z0-9\s]*$',
-        'Название может быть только буквами и цифрами.'
+        validators=[check_username],
     )
     last_name = models.CharField(
         max_length=settings.MAX_LENGTH_LAST_NAME,
         verbose_name='Фамилия',
-        help_text='Введите фамилию пользователя'
-    )
-    name_validator = RegexValidator(
-        r'^[a-zA-Z0-9\s]*$',
-        'Название может быть только буквами и цифрами.'
+        help_text='Введите фамилию пользователя',
+        validators=[check_name],
     )
     
 

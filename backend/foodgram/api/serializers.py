@@ -6,7 +6,7 @@ from rest_framework.validators import UniqueTogetherValidator, ValidationError
 from users.models import User
  
  
-class CustomUserSerializer(serializers.ModelSerializer): 
+class UserSerializer(serializers.ModelSerializer): 
     """Сериализатор пользовательской модели.""" 
     is_subscribed = serializers.SerializerMethodField() 
  
@@ -24,7 +24,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         ).exists() 
  
  
-class SubscriptionUserSerializer(CustomUserSerializer): 
+class SubscriptionUserSerializer(UserSerializer): 
     """Сериализатор пользователей подписки.""" 
     recipes = serializers.SerializerMethodField() 
     recipes_count = serializers.IntegerField( 
@@ -40,12 +40,9 @@ class SubscriptionUserSerializer(CustomUserSerializer):
         ) 
  
     def get_recipes(self, obj): 
-        request = self.context.get('request')
-        if not request.user.is_anonymous:
-            context = {'request': request}
-            recipes_limit = request.GET.get('recipes_limit')
-        else:
-            return False   
+        recipes = obj.recipes.all()
+        recipes_limit = (self.context['request'].query_params
+                                                .get('recipes_limit'))  
         if recipes_limit is not None:
             try:
                 recipes_limit = int(recipes_limit)
@@ -54,7 +51,7 @@ class SubscriptionUserSerializer(CustomUserSerializer):
                 raise ValidationError(
                     ('''Параметр исключает тип int''')
                     ) 
-        return RecipeShortSerializer(recipes, many=True, context=context).data 
+        return RecipeShortSerializer(recipes, many=True,).data
  
  
 class IngredientSerializer(serializers.ModelSerializer): 
@@ -99,7 +96,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         read_only=True, 
         many=True 
     ) 
-    author = CustomUserSerializer( 
+    author = UserSerializer( 
         read_only=True, 
         default=serializers.CurrentUserDefault() 
     ) 

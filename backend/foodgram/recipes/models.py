@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
 from users.models import User
+from users.validators import check_name
 
 
 class Ingredient(models.Model):
@@ -11,10 +12,7 @@ class Ingredient(models.Model):
     name = models.CharField(
         max_length=settings.MAX_LENGTH_INGREDIENT_NAME,
         verbose_name='Название',
-    )
-    name_validator = RegexValidator(
-        r'^[a-zA-Z0-9\s]*$',
-        'Название может быть только буквами и цифрами.'
+        validators=[check_name],
     )
     measurement_unit = models.CharField(
         max_length=settings.MAX_LENGTH_INGREDIENT_MEASURMENT_UNIT,
@@ -36,10 +34,7 @@ class Tag(models.Model):
         max_length=settings.MAX_LENGTH_TAG_NAME,
         unique=True,
         verbose_name='Название',
-    )
-    name_validator = RegexValidator(
-        r'^[a-zA-Z0-9\s]*$',
-        'Название может быть только буквами и цифрами.'
+        validators=[check_name],
     )
     color = models.CharField(
         max_length=settings.MAX_LENGTH_TAG_COLOR,
@@ -78,10 +73,7 @@ class Recipe(models.Model):
         max_length=settings.MAX_LENGTH_RECIPE_NAME,
         unique=True,
         verbose_name='Название',
-    )
-    name_validator = RegexValidator(
-        r'^[a-zA-Z0-9\s]*$',
-        'Название  может быть только буквами и цифрами.'
+        validators=[check_name],
     )
     image = models.ImageField(
         blank=True,
@@ -91,11 +83,11 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name='Описание',
     )
-    ingredients = models.ManyToManyField( 
-        Ingredient, 
-        through='IngredientAmount', 
+    ingredients = models.ForeignKey( 
+        Ingredient,
+        on_delete=models.CASCADE, 
         verbose_name='Ингредиенты',
-        related_name='recipe_ingredients'
+        related_name='IngredientAmount'
     )
     tags = models.ManyToManyField(
         Tag,
