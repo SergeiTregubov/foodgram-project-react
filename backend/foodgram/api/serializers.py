@@ -49,7 +49,7 @@ class SubscriptionUserSerializer(UserSerializer):
                 recipes = recipes[:recipes_limit]
             except ValueError:
                 raise ValidationError(
-                    ('''Параметр исключает тип int''')
+                    'Параметр исключает тип int'
                     ) 
         return RecipeShortSerializer(recipes, many=True,).data
  
