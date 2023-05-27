@@ -1,4 +1,5 @@
 import os
+
 # Вебинар наставника
 # from dotenv import load_dotenv
 

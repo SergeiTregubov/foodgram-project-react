@@ -1,11 +1,12 @@
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe, 
-                            ShoppingCart, Tag) 
-from rest_framework import serializers 
+from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator, ValidationError
+
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingCart, Tag)
 from users.models import User
- 
- 
+
+
 class UserSerializer(serializers.ModelSerializer): 
     """Сериализатор пользовательской модели.""" 
     is_subscribed = serializers.SerializerMethodField() 
@@ -48,9 +49,7 @@ class SubscriptionUserSerializer(UserSerializer):
                 recipes_limit = int(recipes_limit)
                 recipes = recipes[:recipes_limit]
             except ValueError:
-                raise ValidationError(
-                    'Параметр исключает тип int'
-                    ) 
+                raise ValidationError('Параметр исключает тип int') 
         return RecipeShortSerializer(recipes, many=True,).data
  
  

@@ -1,9 +1,9 @@
-from django.contrib import admin 
- 
-from .models import (Favorite, Ingredient, IngredientAmount, Recipe, 
-                     ShoppingCart, Tag) 
- 
- 
+from django.contrib import admin
+
+from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                     ShoppingCart, Tag)
+
+
 @admin.register(Ingredient) 
 class IngredientAdmin(admin.ModelAdmin): 
     """Модель ингредиентов в админ.""" 
