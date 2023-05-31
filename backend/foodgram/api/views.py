@@ -83,13 +83,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.action in ('create', 'partial_update'):
             return RecipeWriteSerializer
         return RecipeSerializer
-    
-    def get_queryset(self): 
-        user_id = self.request.user.pk 
-        return Recipe.objects.add_user_annotations(user_id).select_related( 
-            'author' 
-        ).prefetch_related( 
-            'ingredients', 'tags' 
+
+    def get_queryset(self):
+        user_id = self.request.user.pk
+        return Recipe.objects.add_user_annotations(user_id).select_related(
+            'author'
+        ).prefetch_related(
+            'ingredients', 'tags'
         )
 
     @action(
