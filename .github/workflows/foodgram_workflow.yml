@@ -18,7 +18,7 @@ jobs:
         python -m pip install --upgrade pip 
         pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
 
-        cd backend/
+        cd backend/foodgram/
         pip install -r requirements.txt
 
         # pip install -r  api_yamdb/requirements.txt
