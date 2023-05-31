@@ -16,26 +16,35 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
 
-      # Вебинар наставника + 16 спринт
-    # db:
-    #   image: postgres:13.0-alpine
-    #   ports:
-    #   - "5432:5432"
-    #   volumes:
-    #     - db_data:/var/lib/postgresql/data/
-    #   env_file:
-    #     - /.env
+      #Добавил 
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
 
-  # backend:
-  #   build:
-  #     context: ../backend/foodgram/
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 8000:8000
-  #   volumes:
-  #     - static_value:/app_code/staticfiles/
-  #     - media_value:/app_code/mediafiles/
-  #   depends_on:
-  #     - db
-  #   env_file:
-  #     - ./.env
+      # Вебинар наставника + 16 спринт
+  db:
+    image: postgres:13.0-alpine
+    # ports:
+    # - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  backend:
+    build:
+      context: ../backend/foodgram/
+      dockerfile: Dockerfile
+    # ports:
+    #   - 8000:8000
+    volumes:
+      - static_value:/app_code/staticfiles/
+      - media_value:/app_code/mediafiles/
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+volumes:
+  static_value:
+  media_value:
+  db_data:
