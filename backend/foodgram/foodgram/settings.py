@@ -15,7 +15,7 @@ load_dotenv()
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'a+dyhls*)2a)35lbwx1(so&f#!myl6ojbt%4m#y7tb$i*7izzb'
 SECRET_KEY = os.getenv(key='SECRET_KEY', default='*')
-  
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -95,8 +95,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', default='5432')
     }
 }
-
-
 
 
 # Password validation
