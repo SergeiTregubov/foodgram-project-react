@@ -36,7 +36,7 @@ class User(AbstractUser):
         help_text='Введите фамилию пользователя',
         validators=[check_name],
     )
-    
+
     class Meta:
         ordering = ('id',)
         verbose_name = 'Пользователь'
