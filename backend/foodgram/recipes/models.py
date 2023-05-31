@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core import validators
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from users.models import User
@@ -179,4 +179,3 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = 'Список товара'
         verbose_name_plural = 'Списки товаров'
-    
