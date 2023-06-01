@@ -1,7 +1,5 @@
-import re
-
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+from django.core.validators import RegexValidator
 
 
 def check_username(value):
@@ -11,9 +9,10 @@ def check_username(value):
         )
 
 
-def check_name(value):
-    if not re.match(r'^[A-Za-zА-Яа-я]+$', value):
-        raise ValidationError(
-            _('допускаются только буквы'),
-            code='недопустимое имя'
-        )
+class UserNameValidator(RegexValidator):
+    regex = r'^[а-яА-ЯёЁa-zA-Z -]+$'
+    message = (
+        'Введите правильное имя. Оно должно включать только буквы, '
+        'пробел и дефис.'
+    )
+    flags = 0

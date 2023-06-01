@@ -1,16 +1,12 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model, models
 
-from .models import Subscription, User
+User = get_user_model()
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    """Пользовательская модель в админ."""
-    list_display = ('id', 'email', 'first_name', 'last_name')
-    list_filter = ('username', 'email')
+    list_filter = ('username', 'email',)
 
 
-@admin.register(Subscription)
-class SubscriptionAdmin(admin.ModelAdmin):
-    """Модель подписки в админ."""
-    list_display = ('id', 'user', 'author',)
+admin.site.unregister(models.Group)

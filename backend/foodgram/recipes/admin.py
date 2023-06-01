@@ -1,52 +1,42 @@
 from django.contrib import admin
 
-from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                     ShoppingCart, Tag)
+from recipes.models import (Favorite, Ingredient, RecipeIngredient, Recipes,
+                            ShoppingCart, Tags)
+
+
+class RecipeIngredientInline(admin.StackedInline):
+    model = RecipeIngredient
+    min_num = 1
+
+
+@admin.register(Recipes)
+class RecipesAdmin(admin.ModelAdmin):
+    list_display = ('name', 'author', 'favorite_count',)
+    list_filter = ('name', 'author', 'tags')
+    readonly_fields = ('favorite_count',)
+    inlines = [RecipeIngredientInline]
+
+    def favorite_count(self, obj):
+        return Favorite.objects.filter(recipe=obj).count()
 
 
 @admin.register(Ingredient)
-class IngredientAdmin(admin.ModelAdmin):
-    """Модель ингредиентов в админ."""
+class IngredientsAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
     list_filter = ('name',)
+    search_fields = ('name',)
 
 
-class IngredientsInline(admin.TabularInline):
-    model = IngredientAmount
-    extra = 1
-
-
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    """Модель тегов в админ"""
-    list_display = ('id', 'name', 'color', 'slug')
-
-
-@admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
-    """Модель рецепта в админ."""
-    list_display = ('name', 'author', 'text', 'added_to_favorite')
-    list_filter = ('author', 'name', 'tags')
-    inlines = (IngredientsInline,)
-
-    @staticmethod
-    def added_to_favorite(obj):
-        return obj.favorite.count()
+@admin.register(Tags)
+class TagsAdmin(admin.ModelAdmin):
+    list_display = ('name', 'color', 'slug')
 
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    """Модель избранное в админ."""
-    list_display = ('id', 'recipe', 'user')
+    list_display = ('user', 'recipe')
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
-    """Модель корзины покупок в админ."""
-    list_display = ('id', 'recipe', 'user')
-
-
-@admin.register(IngredientAmount)
-class IngredientAmountAdmin(admin.ModelAdmin):
-    """Модель количества ингредиентов в админ."""
-    list_display = ('id', 'ingredient', 'recipe', 'amount')
+    list_display = ('user', 'recipe')
