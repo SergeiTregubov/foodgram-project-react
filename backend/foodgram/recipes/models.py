@@ -39,7 +39,7 @@ class Ingredient(models.Model):
 
 
 class Tags(models.Model):
-    """Модель тега.""" 
+    """Модель тега."""
     name = models.CharField(max_length=settings.MAX_LENGTH_TAGS,
                             unique=True,
                             verbose_name='Название тега',
