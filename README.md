@@ -1,14 +1,20 @@
 # praktikum_new_diplom
 
-### **Адрес сайта на Яндекс.Облаке**
-http://158.160.102.89/signin <br>
+### **Адрес сайта на Яндекс.Облаке:**
+http://158.160.102.89/signin Вход на сайт и регистрация
+http://158.160.102.89/recipes Главная страница рецептов
+http://158.160.102.89/subscriptions Подписки
+http://158.160.102.89/recipes/create Создание рецепта
+http://158.160.102.89/favorites Избранное
+http://158.160.102.89/cart Список покупок <br>
 ---
-### **Данные для входа в админку**
+### **Данные для входа в админку:**
 ```
-gggggg@bk.ru
-```
-```
-1234
+Имя: Sergei
+Фамилия: Tregubov
+Имя пользователя: SergeiTregubov
+Адрес электронной почты: g@bk.ru
+Пароль: 1234
 ```
 
 
@@ -77,4 +83,16 @@ python manage.py migrate
 - Запуск сервера локально:
 ```bash
 python manage.py runserver
+```
+
+### **Команды докера**
+```
+sudo docker-compose up -d --build
+sudo docker-compose down -v
+sudo docker-compose stop
+sudo docker-compose start
+docker container ls -a
+docker image ls -a
+docker container rm
+docker image rm
 ```
