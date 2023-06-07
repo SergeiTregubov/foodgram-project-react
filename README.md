@@ -15,9 +15,6 @@
 ![image](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 ![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
-
-<!-- # Сайт "Продуктовый помощник" -->
-
 # Оглавление
 1. [Стек технологий](#Стек-технологий)
 2. [Описание workflow](#Описание-workflow)
@@ -183,8 +180,6 @@ DEBUG = False
 
 ```bash
 1) git@github.com:SergeiTregubov/foodgram-project-react.git
-```
-```
 2) cd foodgram-project-react
 ```
 
