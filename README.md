@@ -1,4 +1,4 @@
-# Дипломный проект. Python backend разработчик.
+#Дипломный проект. Python backend разработчик.
 
 ### Описание
 
@@ -228,8 +228,6 @@ docker push sergeitregubov/foodgram_backend # Запушили DockerHub
 ssh ser@158.160.102.89 # Заходим на ВМ
 scp docker-compose.yml ser@158.160.102.89:/home/ser/docker-compose.yml
 scp nginx.conf ser@158.160.102.89:/home/ser/nginx.conf
-scp -r infra ser@158.160.102.89:/home/ser/Dev/foodgram # Копируем infra/ на сервер
-scp -r docs ser@158.160.102.89:/home/ser/Dev/foodgram # Копируем docs/ на сервер
 sudo docker-compose up -d --build # создаём контейнеры
 sudo docker-compose stop # останавливаем контейнеры
 sudo docker-compose start # стартуем контейнеры
