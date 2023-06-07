@@ -1,4 +1,4 @@
-#Дипломный проект. Python backend разработчик.
+# Дипломный проект. Python backend разработчик.
 
 ### Описание
 
@@ -15,7 +15,7 @@
 ![image](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 ![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
-# Оглавление
+# Техническое задание
 1. [Стек технологий](#Стек-технологий)
 2. [Описание workflow](#Описание-workflow)
 3. [Базовые модели проекта](#Базовые-модели-проекта)
