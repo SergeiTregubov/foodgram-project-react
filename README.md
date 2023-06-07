@@ -301,3 +301,5 @@ TELEGRAM_TO
 TELEGRAM_TOKEN
 USER
 ```
+
+Автор: [Трегубов Сергей](https://github.com/SergeiTregubov)
