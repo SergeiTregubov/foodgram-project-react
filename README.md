@@ -226,8 +226,10 @@ docker build -t sergeitregubov/foodgram_backend . # Собрали образ fo
 docker push sergeitregubov/foodgram_frontend # Запушили DockerHub
 docker push sergeitregubov/foodgram_backend # Запушили DockerHub
 ssh ser@158.160.102.89 # Заходим на ВМ
+Enter passphrase for key: # если Вы его установили
 scp docker-compose.yml ser@158.160.102.89:/home/ser/docker-compose.yml
 scp nginx.conf ser@158.160.102.89:/home/ser/nginx.conf
+scp -r infra ser@158.160.102.89:/home/ser/infra # Копируем infra/ на сервер
 sudo docker-compose up -d --build # создаём контейнеры
 sudo docker-compose stop # останавливаем контейнеры
 sudo docker-compose start # стартуем контейнеры
@@ -253,7 +255,7 @@ sudo docker-compose exec backend python manage.py importdata
 
 # Отправляем на гит из нужной директории
 git add .
-git commit -m""
+git commit -m ""
 git push
 ```
 
