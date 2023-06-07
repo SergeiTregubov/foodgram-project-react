@@ -13,7 +13,7 @@
 ![image](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 ![image](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 ![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-# Техническое задание
+# Техническое задание:
 # Оглавление
 1. [Стек технологий](#Стек-технологий)
 2. [Описание workflow](#Описание-workflow)
