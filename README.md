@@ -265,14 +265,34 @@ docker build -t sergeitregubov/foodgram_backend . # Собрали образ fo
 docker push sergeitregubov/foodgram_frontend # Запушили DockerHub
 docker push sergeitregubov/foodgram_backend # Запушили DockerHub
 ssh ser@158.160.102.89 # Заходим на ВМ
-<!-- mkdir Dev # Создаем директорию Dev -->
-<!-- cd Dev/ # Переходим Dev -->
-<!-- mkdir footgram # Создаем директорию footgram -->
-<!-- mkdir footgram # Создаем директорию  footgram -->
+scp docker-compose.yml ser@158.160.102.89:/home/ser/docker-compose.yml
+scp nginx.conf ser@158.160.102.89:/home/ser/nginx.conf
 scp -r infra ser@158.160.102.89:/home/ser/Dev/foodgram # Копируем infra/ на сервер
 scp -r docs ser@158.160.102.89:/home/ser/Dev/foodgram # Копируем docs/ на сервер
-# ПИШЕМ foodgram.yml
-sudo systemctl stop nginx
+sudo docker-compose up -d --build # создаём контейнеры
+sudo docker-compose stop # останавливаем контейнеры
+sudo docker-compose start # стартуем контейнеры
+sudo docker-compose down -v # удаляем volumes
+docker system prune --all --force # удаляем всё, если нам это необходимо
+docker container ls -a # список контейнеров
+docker image ls -a # список образов
+sudo chmod 666 /var/run/docker.sock # хорошая команда
+docker container rm # удаляем контейнер по ID
+docker image rm # удаляем образ по ID
+rm -r file_folder/ # удаляем необходимый файл
+touch default.conf # создаём файл
+nano docker-compose.yml # заходим в файл
+ctrl + O # сохранить файл
+Enter
+ctrl + x # выйти из файла
+# Для доступа к контейнеру backend и сборки финальной части выполняем следующие команды:
+sudo docker-compose exec backend python manage.py makemigrations
+sudo docker-compose exec backend python manage.py migrate --noinput
+sudo docker-compose exec backend python manage.py createsuperuser
+sudo docker-compose exec backend python manage.py collectstatic --no-input
+sudo docker-compose exec backend python manage.py importdata
+
+# Отправляем на гит
 git add .
 git commit -m""
 git push
