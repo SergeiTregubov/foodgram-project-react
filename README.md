@@ -241,20 +241,6 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
-
-### **Команды докера**
-```
-sudo docker-compose up -d --build
-sudo docker-compose down -v
-sudo docker-compose stop
-sudo docker-compose start
-docker container ls -a
-docker image ls -a
-docker container rm
-docker image rm
-```
-
-
 ### **Запуск проекта на сервере в контейнерах:**
 ```
 # МЕНЯЕМ БАЗУ SQLITE НА POSTGRES
@@ -292,7 +278,7 @@ sudo docker-compose exec backend python manage.py createsuperuser
 sudo docker-compose exec backend python manage.py collectstatic --no-input
 sudo docker-compose exec backend python manage.py importdata
 
-# Отправляем на гит
+# Отправляем на гит из нужной директории
 git add .
 git commit -m""
 git push
