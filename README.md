@@ -16,7 +16,7 @@
 ![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
 
-# Сайт "Продуктовый помощник"
+<!-- # Сайт "Продуктовый помощник" -->
 
 # Оглавление
 1. [Стек технологий](#Стек-технологий)
@@ -36,12 +36,12 @@
 15. [Настройки админки](#Настройки-админки)
 16. [Технические требования и инфраструктура](#Технические-требования-и-инфраструктура)
 17. [Шаблон наполнения .env файла](#шаблон-наполнения-env-файла)
-## Стек технологий
+<!-- ## Стек технологий
 [![Django-app workflow](https://github.com/foxygen-d/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)](https://github.com/foxygen-d/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
 [![Django](https://img.shields.io/badge/-Django-464646?style=flat&logo=Django&logoColor=56C0C0&color=008080)](https://www.djangoproject.com/)
 [![Docker-compose](https://img.shields.io/badge/-Docker%20compose-464646?style=flat&logo=Docker&logoColor=56C0C0&color=008080)](https://www.docker.com/)
 [![Docker Hub](https://img.shields.io/badge/-Docker%20Hub-464646?style=flat&logo=Docker&logoColor=56C0C0&color=008080)](https://www.docker.com/products/docker-hub)
-[![Yandex.Cloud](https://img.shields.io/badge/-Yandex.Cloud-464646?style=flat&logo=Yandex.Cloud&logoColor=56C0C0&color=008080)](https://cloud.yandex.ru/)
+[![Yandex.Cloud](https://img.shields.io/badge/-Yandex.Cloud-464646?style=flat&logo=Yandex.Cloud&logoColor=56C0C0&color=008080)](https://cloud.yandex.ru/) -->
 ## Описание workflow
 * проверка кода на соответствие стандарту PEP8 (с помощью пакета flake8)
 * сборка и доставка докер-образа для контейнера web на Docker Hub
@@ -171,7 +171,9 @@ POSTGRES_USER=postgres # логин для подключения к базе д
 POSTGRES_PASSWORD=postgres # пароль для подключения к БД
 DB_HOST=db
 DB_PORT=5432 # порт для подключения к БД
-SECRET_KEY='a'
+SECRET_KEY='secret' # секретный ключ из сеттингс
+ALLOWED_HOSTS='127.0.0.1, backend' # Вставляем свой IP сервера.
+DEBUG = False
 ```
 
 ### **Адрес сайта на Яндекс.Облаке:**
@@ -250,4 +252,46 @@ docker container ls -a
 docker image ls -a
 docker container rm
 docker image rm
+```
+
+
+### **Запуск проекта на сервере в контейнерах:**
+```
+# МЕНЯЕМ БАЗУ SQLITE НА POSTGRES
+pip install python-dotenv
+# ИЗМЕНЯЕМ НАСТРОЙКИ БД В settings.pe
+docker build -t sergeitregubov/foodgram_frontend . # Собрали образ foodgram_frontend 
+docker build -t sergeitregubov/foodgram_backend . # Собрали образ foodgram_backend
+docker push sergeitregubov/foodgram_frontend # Запушили DockerHub
+docker push sergeitregubov/foodgram_backend # Запушили DockerHub
+ssh ser@158.160.102.89 # Заходим на ВМ
+<!-- mkdir Dev # Создаем директорию Dev -->
+<!-- cd Dev/ # Переходим Dev -->
+<!-- mkdir footgram # Создаем директорию footgram -->
+<!-- mkdir footgram # Создаем директорию  footgram -->
+scp -r infra ser@158.160.102.89:/home/ser/Dev/foodgram # Копируем infra/ на сервер
+scp -r docs ser@158.160.102.89:/home/ser/Dev/foodgram # Копируем docs/ на сервер
+# ПИШЕМ foodgram.yml
+sudo systemctl stop nginx
+git add .
+git commit -m""
+git push
+```
+
+### **Actions secrets**
+```
+DB_ENGINE
+DB_HOST
+DB_NAME
+DB_PORT
+DOCKER_PASSWORD
+DOCKER_USERNAME
+HOST
+POSTGRES_PASSWORD
+POSTGRES_USER
+SECRET_KEY
+SSH_KEY
+TELEGRAM_TO
+TELEGRAM_TOKEN
+USER
 ```
