@@ -3,7 +3,8 @@
 ### Описание
 
 Сервис Foodgram для публикации рецептов. Сайт, на котором пользователи будут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов.
-### Стек технологии:
+
+### Используемые технологии:
 ![image](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
 ![image](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 ![image](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)
@@ -13,8 +14,8 @@
 ![image](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 ![image](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 ![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-# Техническое задание:
-# Оглавление
+
+# Техническое задание
 1. [Стек технологий](#Стек-технологий)
 2. [Описание workflow](#Описание-workflow)
 3. [Базовые модели проекта](#Базовые-модели-проекта)
@@ -32,19 +33,13 @@
 15. [Настройки админки](#Настройки-админки)
 16. [Технические требования и инфраструктура](#Технические-требования-и-инфраструктура)
 17. [Шаблон наполнения .env файла](#шаблон-наполнения-env-файла)
-## Стек технологий
-![image](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
-![image](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
-![image](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)
-![image](https://img.shields.io/badge/django%20rest-ff1709?style=for-the-badge&logo=django&logoColor=white)
-![image](https://img.shields.io/badge/VSCode-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white)
-![image](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
-![image](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
-![image](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
-![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-
+<!-- ## Стек технологий
+[![Django-app workflow](https://github.com/foxygen-d/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)](https://github.com/foxygen-d/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
+[![Django](https://img.shields.io/badge/-Django-464646?style=flat&logo=Django&logoColor=56C0C0&color=008080)](https://www.djangoproject.com/)
+[![Docker-compose](https://img.shields.io/badge/-Docker%20compose-464646?style=flat&logo=Docker&logoColor=56C0C0&color=008080)](https://www.docker.com/)
+[![Docker Hub](https://img.shields.io/badge/-Docker%20Hub-464646?style=flat&logo=Docker&logoColor=56C0C0&color=008080)](https://www.docker.com/products/docker-hub)
+[![Yandex.Cloud](https://img.shields.io/badge/-Yandex.Cloud-464646?style=flat&logo=Yandex.Cloud&logoColor=56C0C0&color=008080)](https://cloud.yandex.ru/) -->
 ## Описание workflow
-
 * проверка кода на соответствие стандарту PEP8 (с помощью пакета flake8)
 * сборка и доставка докер-образа для контейнера web на Docker Hub
 * автоматический деплой проекта на боевой сервер
@@ -191,14 +186,17 @@ DEBUG = False
 - Cоздать и активировать виртуальное окружение:
 
 ```bash
-python -m venv venv
+python -m venv venv # Windows
+```
+```bash
+python3 -m venv venv # Linux
 ```
 
 ```bash
-source venv/Scripts/activate - Windows
+source venv/Scripts/activate # Windows
 ```
 ```
-source venv/bin/activate - Linux systems
+source venv/bin/activate # Linux
 ```
 - Установить зависимости проекта:
 
@@ -220,6 +218,10 @@ python manage.py migrate
 - Запуск сервера локально:
 ```bash
 python manage.py runserver
+```
+- Создаём суперпользователя(admin/root):
+```bash
+python manage.py createsuperuser
 ```
 ### **Запуск проекта на сервере в контейнерах:**
 ```
@@ -260,7 +262,7 @@ sudo docker-compose exec backend python manage.py importdata
 
 # Отправляем на гит из нужной директории
 git add .
-git commit -m ""
+git commit -m 'Final'
 git push
 ```
 
